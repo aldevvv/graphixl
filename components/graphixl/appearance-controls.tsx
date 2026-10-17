@@ -119,7 +119,7 @@ export function AppearanceControls({
           </div>
         </div>
 
-        {/* Dimensions Dropdown */}
+        {/* Dimensions Selector */}
         <div className="flex flex-col gap-1.5">
           <div className="flex items-center justify-between">
             <span className="text-[11px] font-semibold uppercase tracking-wider text-[#737373]">
@@ -129,7 +129,36 @@ export function AppearanceControls({
               {ASPECT_RATIO_CONFIGS[document.aspectRatio].width} × {ASPECT_RATIO_CONFIGS[document.aspectRatio].height} px
             </span>
           </div>
-          <div className="relative">
+
+          {/* Desktop: Segmented buttons showing human-readable name and ratio */}
+          <div className="hidden sm:grid grid-cols-5 gap-1.5">
+            {ASPECT_RATIO_OPTIONS.map((preset) => {
+              const isSelected = document.aspectRatio === preset;
+              const config = ASPECT_RATIO_CONFIGS[preset];
+              const shortName = config.label.replace(" Share", "").replace(" Post", "").replace(" Feed", "").replace(" & Reel", "");
+              return (
+                <button
+                  key={preset}
+                  type="button"
+                  onClick={() => handleAspectRatioChange(preset)}
+                  className={`h-9 px-1 rounded-[6px] border text-xs font-medium transition-colors flex flex-col items-center justify-center text-center leading-tight ${
+                    isSelected
+                      ? "border-[#0A0A0A] bg-[#0A0A0A] text-white"
+                      : "border-[#E5E5E5] bg-white text-[#525252] hover:border-[#0A0A0A] hover:text-[#0A0A0A]"
+                  }`}
+                  title={`${config.label} (${config.ratio})`}
+                >
+                  <span className="truncate w-full text-[11px] font-medium">{shortName}</span>
+                  <span className={`text-[10px] ${isSelected ? "text-white/75" : "text-[#737373]"}`}>
+                    {config.ratio}
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+
+          {/* Mobile: Dropdown selector */}
+          <div className="relative sm:hidden">
             <select
               value={document.aspectRatio}
               onChange={(e) => handleAspectRatioChange(e.target.value as AspectRatioPreset)}
