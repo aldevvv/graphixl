@@ -43,7 +43,7 @@ export function UrlForm({
           className={`group relative flex flex-col sm:flex-row items-stretch sm:items-center rounded-[10px] border bg-white p-1.5 transition-colors sm:h-14 ${
             errorMessage
               ? "border-red-500 ring-1 ring-red-500"
-              : "border-[#E5E5E5] hover:bg-[#FAFAFA] hover:shadow-xs focus-within:bg-white focus-within:ring-2 focus-within:ring-[#0A0A0A]/5"
+              : "border-[#E5E5E5] bg-white transition-shadow duration-150 hover:shadow-[0_1px_4px_rgba(0,0,0,0.04)] focus-within:shadow-[0_2px_6px_rgba(0,0,0,0.05)] focus-within:border-[#E5E5E5]"
           }`}
         >
           <div className="hidden sm:flex items-center pl-3 pr-1 text-[#737373]">

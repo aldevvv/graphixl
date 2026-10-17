@@ -1,10 +1,12 @@
 import React from "react";
 import { TemplateProps } from "./editorial";
 import { getCardDisplayUrl } from "../types";
+import { getTemplateTheme } from "./theme";
 
 export function RepositoryTemplate({ document, dimensions }: TemplateProps): React.JSX.Element {
   const { customization, metadata, aspectRatio } = document;
   const isVertical = aspectRatio === "story" || aspectRatio === "portrait";
+  const theme = getTemplateTheme(customization.backgroundColor);
   const padding = Math.round(dimensions.width * 0.075);
   const headlineSize = isVertical ? 58 : 50;
   const displayUrl = getCardDisplayUrl(document);
@@ -14,8 +16,8 @@ export function RepositoryTemplate({ document, dimensions }: TemplateProps): Rea
       ? "SFMono-Regular, Consolas, monospace"
       : "Satoshi, Inter, sans-serif";
 
-  const owner = (metadata.extra?.owner as string) || customization.author || "github";
-  const repo = (metadata.extra?.repo as string) || customization.title;
+  const owner = customization.author || (metadata.extra?.owner as string) || "github";
+  const repo = customization.title || (metadata.extra?.repo as string) || "repository";
   const language = (metadata.extra?.language as string) || "";
   const stars = metadata.extra?.stars as number | undefined;
 
@@ -51,7 +53,8 @@ export function RepositoryTemplate({ document, dimensions }: TemplateProps): Rea
               gap: "8px",
               padding: "6px 14px",
               borderRadius: "8px",
-              backgroundColor: "rgba(23, 24, 21, 0.06)",
+              backgroundColor: theme.surfaceMuted,
+              border: `1px solid ${theme.badgeBorder}`,
               fontSize: "17px",
               fontWeight: 600,
             }}
@@ -143,7 +146,7 @@ export function RepositoryTemplate({ document, dimensions }: TemplateProps): Rea
           alignItems: "center",
           justifyContent: "space-between",
           paddingTop: "24px",
-          borderTop: "1px solid rgba(23, 24, 21, 0.12)",
+          borderTop: `1px solid ${theme.divider}`,
           fontSize: "19px",
         }}
       >

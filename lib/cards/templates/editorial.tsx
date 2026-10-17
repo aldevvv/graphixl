@@ -1,5 +1,6 @@
 import React from "react";
 import { CardDocument, getCardDisplayUrl } from "../types";
+import { getTemplateTheme } from "./theme";
 
 export interface TemplateProps {
   document: CardDocument;
@@ -11,6 +12,7 @@ export function EditorialTemplate({ document, dimensions, resolvedImageUrl }: Te
   const { customization, aspectRatio } = document;
   const isVertical = aspectRatio === "story" || aspectRatio === "portrait";
   const isLandscape = aspectRatio === "landscape" || aspectRatio === "social";
+  const theme = getTemplateTheme(customization.backgroundColor);
 
   const padding = Math.round(dimensions.width * 0.07);
   const headlineSize = isVertical ? 58 : isLandscape ? 52 : 56;
@@ -47,7 +49,7 @@ export function EditorialTemplate({ document, dimensions, resolvedImageUrl }: Te
           justifyContent: "space-between",
           width: "100%",
           paddingBottom: "24px",
-          borderBottom: "1px solid rgba(23, 24, 21, 0.12)",
+          borderBottom: `1px solid ${theme.divider}`,
         }}
       >
         <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
@@ -79,10 +81,11 @@ export function EditorialTemplate({ document, dimensions, resolvedImageUrl }: Te
               alignItems: "center",
               padding: "6px 14px",
               borderRadius: "999px",
-              backgroundColor: "rgba(23, 24, 21, 0.05)",
+              backgroundColor: theme.badgeBg,
+              border: `1px solid ${theme.badgeBorder}`,
               fontSize: "16px",
               fontWeight: 500,
-              opacity: 0.75,
+              opacity: 0.85,
             }}
           >
             {customization.badge}
@@ -105,8 +108,8 @@ export function EditorialTemplate({ document, dimensions, resolvedImageUrl }: Te
               flexShrink: 0,
               overflow: "hidden",
               borderRadius: "16px",
-              border: "1px solid rgba(23, 24, 21, 0.1)",
-              backgroundColor: "rgba(23, 24, 21, 0.04)",
+              border: `1px solid ${theme.imageBorder}`,
+              backgroundColor: theme.imageBg,
             }}
           >
             {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -197,7 +200,7 @@ export function EditorialTemplate({ document, dimensions, resolvedImageUrl }: Te
           alignItems: "center",
           justifyContent: "space-between",
           paddingTop: "24px",
-          borderTop: "1px solid rgba(23, 24, 21, 0.12)",
+          borderTop: `1px solid ${theme.divider}`,
           fontSize: "18px",
           opacity: 0.75,
         }}

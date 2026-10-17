@@ -1,6 +1,7 @@
 import React from "react";
 import { TemplateProps } from "./editorial";
 import { getCardDisplayUrl } from "../types";
+import { getTemplateTheme } from "./theme";
 
 export function MinimalTemplate({
   document,
@@ -10,6 +11,7 @@ export function MinimalTemplate({
   const { customization, aspectRatio } = document;
   const isVertical = aspectRatio === "story" || aspectRatio === "portrait";
   const isLandscape = aspectRatio === "landscape" || aspectRatio === "social";
+  const theme = getTemplateTheme(customization.backgroundColor);
   const padding = Math.round(dimensions.width * 0.08);
   const headlineSize = isVertical ? 64 : 56;
   const displayUrl = getCardDisplayUrl(document);
@@ -70,8 +72,8 @@ export function MinimalTemplate({
               flexShrink: 0,
               borderRadius: "14px",
               overflow: "hidden",
-              border: "1px solid rgba(23, 24, 21, 0.08)",
-              backgroundColor: "rgba(23, 24, 21, 0.03)",
+              border: `1px solid ${theme.imageBorder}`,
+              backgroundColor: theme.imageBg,
             }}
           >
             {/* eslint-disable-next-line @next/next/no-img-element */}

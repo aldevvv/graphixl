@@ -1,10 +1,12 @@
 import React from "react";
 import { TemplateProps } from "./editorial";
 import { getCardDisplayUrl } from "../types";
+import { getTemplateTheme, isDarkColor } from "./theme";
 
 export function ProductTemplate({ document, dimensions, resolvedImageUrl }: TemplateProps): React.JSX.Element {
   const { customization, aspectRatio } = document;
   const isVertical = aspectRatio === "story" || aspectRatio === "portrait";
+  const theme = getTemplateTheme(customization.backgroundColor);
   const padding = Math.round(dimensions.width * 0.065);
   const headlineSize = isVertical ? 56 : 48;
   const displayUrl = getCardDisplayUrl(document);
@@ -46,7 +48,7 @@ export function ProductTemplate({ document, dimensions, resolvedImageUrl }: Temp
               padding: "6px 14px",
               borderRadius: "8px",
               backgroundColor: customization.accentColor,
-              color: "#171815",
+              color: isDarkColor(customization.accentColor) ? "#FFFFFF" : "#171815",
               fontSize: "16px",
               fontWeight: 700,
               letterSpacing: "0.02em",
@@ -60,8 +62,12 @@ export function ProductTemplate({ document, dimensions, resolvedImageUrl }: Temp
           <span
             style={{
               fontSize: "16px",
-              fontWeight: 500,
-              opacity: 0.65,
+              fontWeight: 600,
+              padding: "6px 14px",
+              borderRadius: "999px",
+              backgroundColor: theme.badgeBg,
+              border: `1px solid ${theme.badgeBorder}`,
+              opacity: 0.85,
             }}
           >
             {customization.badge}
@@ -82,8 +88,8 @@ export function ProductTemplate({ document, dimensions, resolvedImageUrl }: Temp
               flexShrink: 0,
               borderRadius: "16px",
               overflow: "hidden",
-              border: "1px solid rgba(23, 24, 21, 0.1)",
-              backgroundColor: "rgba(23, 24, 21, 0.03)",
+              border: `1px solid ${theme.imageBorder}`,
+              backgroundColor: theme.imageBg,
             }}
           >
             {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -171,7 +177,7 @@ export function ProductTemplate({ document, dimensions, resolvedImageUrl }: Temp
           alignItems: "center",
           justifyContent: "space-between",
           paddingTop: "20px",
-          borderTop: "1px solid rgba(23, 24, 21, 0.1)",
+          borderTop: `1px solid ${theme.divider}`,
           fontSize: "17px",
           opacity: 0.75,
         }}
