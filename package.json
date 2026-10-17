@@ -2,11 +2,19 @@
   "name": "graphixl",
   "version": "0.1.0",
   "private": true,
+  "description": "An open-source tool for turning URLs into polished, customizable social media cards with live previews and high-resolution image exports.",
+  "license": "MIT",
+  "packageManager": "pnpm@11.15.1",
+  "engines": {
+    "node": ">=22"
+  },
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "typecheck": "next typegen && tsc --noEmit",
+    "verify": "pnpm lint && pnpm typecheck && pnpm build"
   },
   "dependencies": {
     "@base-ui/react": "^1.9.0",
