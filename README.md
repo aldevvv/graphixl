@@ -24,7 +24,7 @@ Graphixl streamlines this process:
 
 Graphixl is in its **early development stage**.
 
-The foundational application shell, UI component system, build pipelines, and core dependencies (Satori, Resvg, Cheerio, Zod) are established and verified. The core domain services—including the Link Resolver API, Card Engine template registry, and Studio interface—are currently in active design and implementation.
+The foundational application shell, UI component system, build pipelines, and core dependencies (Satori, Resvg, Cheerio, Zod) are established and verified. Core domain services, including the Link Resolver API, Card Engine template registry, and Studio interface, are currently in active design and implementation.
 
 For detailed information on subsystem boundaries and the implementation roadmap, see [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
 
