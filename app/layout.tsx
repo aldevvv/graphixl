@@ -27,9 +27,6 @@ export const metadata: Metadata = {
   ],
   authors: [{ name: "aldevvv" }],
   creator: "aldevvv",
-  icons: {
-    icon: "/favicon.ico",
-  },
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

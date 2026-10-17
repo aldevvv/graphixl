@@ -1,52 +1,49 @@
 # Security Policy
 
-The Graphixl maintainers take the security of this project seriously. This document outlines our vulnerability reporting policy and guidelines for responsible disclosure.
+This document outlines the vulnerability reporting policy and security expectations for Graphixl.
 
 ## Supported Versions
 
-Graphixl is currently in active early development. Security updates are applied to the `main` branch.
+Graphixl is currently in early development. Security updates are applied directly to the `main` branch.
 
-| Branch | Supported          |
-| ------ | ------------------ |
-| `main` | :white_check_mark: |
+| Branch | Supported |
+| ------ | --------- |
+| `main` | Yes       |
 
 ## Reporting a Vulnerability
 
-**Please do not report security vulnerabilities through public GitHub issues or public discussions.**
+Do not report security vulnerabilities through public GitHub issues or discussions.
 
-If you discover a security vulnerability in Graphixl, please disclose it privately using one of the following methods:
+Send vulnerability reports privately to the project maintainer by email:
 
-1. **GitHub Private Vulnerability Reporting:** Submit a report via the [Security tab](https://github.com/aldevvv/graphixl/security/advisories/new) of the repository if private vulnerability reporting is enabled.
-2. **Direct Contact:** If GitHub Private Vulnerability Reporting is unavailable, email the maintainer privately at `mhdalif.id@gmail.com` with the subject line `[SECURITY] Graphixl Vulnerability Report`.
+- Contact: `mhdalif.id@gmail.com`
+- Subject line: `[SECURITY] Graphixl Vulnerability Report`
 
-### What to Include in Your Report
+If GitHub Private Vulnerability Reporting is enabled for the repository, reports may also be submitted through the repository Security tab.
 
-To help us assess and resolve the issue quickly, please provide:
+### What to Include
 
-- A clear description of the vulnerability and its potential impact.
-- Step-by-step reproduction instructions or a minimal proof of concept (PoC).
-- The affected component, file, or endpoint.
-- Any suggested mitigations or patches, if available.
+Please provide:
+
+- A description of the vulnerability and its potential impact.
+- Step-by-step reproduction instructions or a minimal proof of concept.
+- The affected file, component, or configuration.
+- Any suggested remediations or patches.
 
 ### Response Process
 
-- We will acknowledge receipt of your report within 48 to 72 hours.
-- We will investigate and validate the issue, keeping you informed of progress.
-- Once a fix is verified, a patched release will be committed to `main`.
-- Public disclosure will be coordinated responsibly after the fix is deployed.
+The maintainer will review reports on a best-effort basis, investigate confirmed issues, and coordinate any necessary fixes directly on the `main` branch before public release notes are published.
 
-## Security Considerations for Contributors
+## Planned Security Requirements for URL Retrieval
 
-Graphixl processes untrusted URLs submitted by users to extract metadata and render images. When contributing, keep the following security boundaries in mind:
+Graphixl is designed to process external URLs to extract metadata. Core networking features are currently in development. Future implementations of the Link Resolver must satisfy the following security requirements:
 
-- **Server-Side Request Forgery (SSRF):** Any HTTP client fetching target URLs must validate input schemes (restricting to `http:` and `https:`) and strictly prohibit requests to loopback, link-local, private IP ranges (RFC 1918, RFC 4193), cloud metadata services, and internal infrastructure.
-- **Resource Limits:** Implement strict response size caps, request timeouts, and redirect limits to protect against denial of service and decompression bombs.
-- **Sanitization:** All extracted HTML metadata must be properly sanitized before rendering or storing to prevent Cross-Site Scripting (XSS).
+- **Server-Side Request Forgery (SSRF) Defense:** URL schemes must be restricted strictly to `http:` and `https:`. Outbound requests to loopback addresses, link-local addresses, private subnets (RFC 1918, RFC 4193), and cloud metadata endpoints (such as `169.254.169.254`) must be blocked at both the DNS resolution and HTTP transport layers.
+- **Resource Limits:** Implement explicit response size limits, request timeouts, and maximum redirect counts to mitigate denial of service and decompression attacks.
+- **Content Sanitization:** Extracted metadata must be sanitized before rendering into DOM or SVG contexts to prevent script injection.
 
 ## Dependency Security Posture
 
-Graphixl strictly verifies production dependencies to maintain zero known production vulnerabilities:
-
-- Production dependencies are validated with `pnpm audit --prod` as a mandatory blocking gate in CI.
-- Overrides are applied where necessary (e.g., `fflate` via `pnpm-workspace.yaml` for Satori dependencies) to resolve upstream vulnerabilities.
-- **Known Development Advisory:** A stack-exhaustion denial of service advisory exists in `braces` (<=3.0.3), transitive within `eslint-config-next` / `@next/eslint-plugin-next`. This dependency is strictly used during local linting and CI analysis, is excluded from production builds and runtime artifacts, and does not impact application security.
+- **Production Dependencies:** Production dependencies are audited using `pnpm audit --prod` as a required check in the continuous integration pipeline.
+- **Overrides:** Dependency overrides are declared in `pnpm-workspace.yaml` where necessary, such as pinning `fflate` for Satori dependencies to mitigate upstream vulnerabilities.
+- **Development Tooling Advisory:** The known `braces` advisory currently affects the development dependency tree through ESLint tooling (`eslint-config-next > @next/eslint-plugin-next > fast-glob > micromatch > braces`). It is not present in the audited production dependency tree. The advisory remains under review pending an upstream fix.

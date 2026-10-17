@@ -8,7 +8,7 @@ Graphixl is an open-source tool for turning URLs into polished, customizable soc
 
 ## Overview
 
-Sharing links across modern platforms like Instagram Stories, LinkedIn, X, and messaging apps often produces underwhelming visual previews or requires manual graphic design effort.
+Sharing links across platforms like Instagram Stories, LinkedIn, X, and messaging apps often produces underwhelming visual previews or requires manual graphic design effort.
 
 Graphixl streamlines this process:
 
@@ -34,21 +34,22 @@ For detailed information on subsystem boundaries and the implementation roadmap,
 
 - **Link Resolver:**
   - Automated extraction of Open Graph, Twitter Cards, and standard HTML metadata.
-  - Robust Server-Side Request Forgery (SSRF) mitigation and request timeouts.
+  - Server-Side Request Forgery (SSRF) mitigation and request timeouts.
   - Specialized adapters for platforms like GitHub, YouTube, and Substack.
 - **Card Engine:**
   - Standardized, declarative card document schema validated with Zod.
   - Curated library of swappable card templates.
   - Multi-ratio rendering presets:
     - Square (`1:1`) for Instagram feeds and square posts.
+    - Portrait (`4:5`) for Instagram portrait posts.
     - Story / Reel (`9:16`) for Instagram Stories, TikTok, and mobile viewing.
     - Landscape (`16:9`) for video cards and presentations.
     - Social Share (`1.91:1`) for Open Graph cards and web previews.
-  - High-fidelity SVG generation powered by Satori.
-  - Crisp, deterministic PNG rasterization at high DPI via `@resvg/resvg-js`.
+  - SVG generation powered by Satori.
+  - Deterministic PNG rasterization at high DPI via `@resvg/resvg-js`.
 - **Studio Interface:**
-  - Intuitive web-based workspace with real-time card previews.
-  - Granular styling controls: typography, color schemes, padding, and accents.
+  - Web-based workspace with real-time card previews.
+  - Styling controls: typography, color schemes, padding, and accents.
   - One-click image download and clipboard export.
 - **Self-Hosting Friendly:**
   - Fully open-source with no mandatory external SaaS dependencies.
@@ -60,7 +61,7 @@ For detailed information on subsystem boundaries and the implementation roadmap,
 - **Simplicity:** High-quality visual cards generated in seconds without steep learning curves.
 - **Visual Quality:** Pixel-perfect typography, balanced spacing, and refined color harmony out of the box.
 - **Extensibility:** Modular architecture allowing new templates, extractors, and export formats to be added cleanly.
-- **Security & Privacy:** Defensive HTTP client handling, strict anti-SSRF protections, and zero tracking.
+- **Security & Privacy:** Defensive HTTP client handling, anti-SSRF protections, and zero tracking.
 
 ---
 
@@ -80,7 +81,7 @@ For detailed information on subsystem boundaries and the implementation roadmap,
 
 Ensure your local development environment meets the following requirements:
 
-- **Node.js:** `>= 22` (v22 LTS recommended; see `.nvmrc`)
+- **Node.js:** `>= 22` (Node.js 22; see `.nvmrc`)
 - **pnpm:** `>= 11.15.1`
 
 If you use `nvm`, switch to the compatible Node.js version with:
@@ -145,7 +146,7 @@ For an in-depth breakdown of module responsibilities and data flow, consult the 
 
 ## Contributing
 
-Contributions from the open-source community are welcome! Please read [CONTRIBUTING.md](CONTRIBUTING.md) for details on our code style, branching strategy, and pull request workflow.
+Contributions from the open-source community are welcome. Please read [CONTRIBUTING.md](CONTRIBUTING.md) for details on our code style, branching strategy, and pull request workflow.
 
 ---
 
