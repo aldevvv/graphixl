@@ -1,17 +1,18 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import {
   CardDocument,
   TemplateId,
   AspectRatioPreset,
   TypographyFamily,
   UrlDisplayMode,
+  ImagePlacement,
   ASPECT_RATIO_CONFIGS,
   getCardDisplayUrl,
 } from "@/lib/cards/types";
 import { TEMPLATE_METADATA } from "@/lib/cards/templates";
-import { ChevronDown, Check, Image as ImageIcon, X } from "lucide-react";
+import { ChevronDown, Check, Image as ImageIcon, X, SlidersHorizontal } from "lucide-react";
 
 interface AppearanceControlsProps {
   document: CardDocument;
@@ -42,6 +43,7 @@ export function AppearanceControls({
   onReset,
 }: AppearanceControlsProps): React.JSX.Element {
   const { customization } = document;
+  const [showAdvanced, setShowAdvanced] = useState(false);
 
   const updateCustomization = (partial: Partial<typeof customization>) => {
     onChange({
@@ -82,21 +84,29 @@ export function AppearanceControls({
     });
   };
 
+  const handleImagePlacementChange = (placement: ImagePlacement) => {
+    updateCustomization({
+      imagePlacement: placement,
+    });
+  };
+
   const currentDisplayUrl =
     customization.customUrl && customization.customUrl.trim().length > 0
       ? customization.customUrl
       : getCardDisplayUrl(document);
 
+  const currentPlacement: ImagePlacement = customization.imagePlacement || "below";
+
   return (
-    <div className="w-full flex flex-col gap-4 text-[#0A0A0A]">
-      {/* 1. Top Row: Template & Dimensions Dropdown */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pb-3 border-b border-[#E5E5E5]">
+    <div className="w-full flex flex-col gap-5 text-[#0A0A0A]">
+      {/* 1. Essential Section: Template & Dimensions */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 pb-4 border-b border-[#E5E5E5]">
         {/* Template Selector */}
         <div className="flex flex-col gap-1.5">
           <span className="text-[11px] font-semibold uppercase tracking-wider text-[#737373]">
             Template
           </span>
-          <div className="grid grid-cols-2 gap-1.5">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-1.5">
             {TEMPLATE_OPTIONS.map((id) => {
               const isSelected = document.template === id;
               const meta = TEMPLATE_METADATA[id];
@@ -105,10 +115,10 @@ export function AppearanceControls({
                   key={id}
                   type="button"
                   onClick={() => handleTemplateChange(id)}
-                  className={`h-9 px-2 rounded-[6px] border text-xs font-medium transition-colors truncate text-center ${
+                  className={`h-9 px-2 rounded-[6px] border text-xs font-medium transition-all truncate text-center ${
                     isSelected
                       ? "border-[#0A0A0A] bg-[#0A0A0A] text-white"
-                      : "border-[#E5E5E5] bg-white text-[#525252] hover:border-[#0A0A0A]/40 hover:text-[#0A0A0A]"
+                      : "border-[#E5E5E5] bg-white text-[#525252] hover:bg-[#F5F5F5] hover:text-[#0A0A0A]"
                   }`}
                   title={meta?.description}
                 >
@@ -130,21 +140,25 @@ export function AppearanceControls({
             </span>
           </div>
 
-          {/* Desktop: Segmented buttons showing human-readable name and ratio */}
+          {/* Desktop: Segmented buttons */}
           <div className="hidden sm:grid grid-cols-5 gap-1.5">
             {ASPECT_RATIO_OPTIONS.map((preset) => {
               const isSelected = document.aspectRatio === preset;
               const config = ASPECT_RATIO_CONFIGS[preset];
-              const shortName = config.label.replace(" Share", "").replace(" Post", "").replace(" Feed", "").replace(" & Reel", "");
+              const shortName = config.label
+                .replace(" Share", "")
+                .replace(" Post", "")
+                .replace(" Feed", "")
+                .replace(" & Reel", "");
               return (
                 <button
                   key={preset}
                   type="button"
                   onClick={() => handleAspectRatioChange(preset)}
-                  className={`h-9 px-1 rounded-[6px] border text-xs font-medium transition-colors flex flex-col items-center justify-center text-center leading-tight ${
+                  className={`h-9 px-1 rounded-[6px] border text-xs font-medium transition-all flex flex-col items-center justify-center text-center leading-tight ${
                     isSelected
                       ? "border-[#0A0A0A] bg-[#0A0A0A] text-white"
-                      : "border-[#E5E5E5] bg-white text-[#525252] hover:border-[#0A0A0A] hover:text-[#0A0A0A]"
+                      : "border-[#E5E5E5] bg-white text-[#525252] hover:bg-[#F5F5F5] hover:text-[#0A0A0A]"
                   }`}
                   title={`${config.label} (${config.ratio})`}
                 >
@@ -162,7 +176,7 @@ export function AppearanceControls({
             <select
               value={document.aspectRatio}
               onChange={(e) => handleAspectRatioChange(e.target.value as AspectRatioPreset)}
-              className="w-full h-9 appearance-none rounded-[6px] border border-[#E5E5E5] bg-white px-3 pr-8 text-xs font-medium text-[#0A0A0A] outline-none transition-colors hover:border-[#0A0A0A]/40 focus:border-[#0A0A0A] cursor-pointer"
+              className="w-full h-9 appearance-none rounded-[6px] border border-[#E5E5E5] bg-[#FAFAFA] px-3 pr-8 text-xs font-medium text-[#0A0A0A] outline-none transition-all hover:bg-[#F2F2F2] focus:bg-white focus:ring-2 focus:ring-[#0A0A0A]/5 cursor-pointer"
             >
               {ASPECT_RATIO_OPTIONS.map((preset) => {
                 const config = ASPECT_RATIO_CONFIGS[preset];
@@ -178,7 +192,7 @@ export function AppearanceControls({
         </div>
       </div>
 
-      {/* 2. Content & URL Display Section */}
+      {/* 2. Essential Section: Headline & Description */}
       <div className="flex flex-col gap-3">
         <span className="text-[11px] font-semibold uppercase tracking-wider text-[#737373]">
           Card Content
@@ -192,7 +206,7 @@ export function AppearanceControls({
               type="text"
               value={customization.title}
               onChange={(e) => updateCustomization({ title: e.target.value })}
-              className="w-full h-9 rounded-[6px] border border-[#E5E5E5] bg-white px-3 text-xs text-[#0A0A0A] outline-none transition-colors focus:border-[#0A0A0A]"
+              className="w-full h-9 rounded-[6px] border border-[#E5E5E5] bg-[#FAFAFA] px-3 text-xs text-[#0A0A0A] outline-none transition-all duration-150 hover:bg-[#F2F2F2] hover:shadow-xs focus:bg-white focus:ring-2 focus:ring-[#0A0A0A]/5 focus:border-[#E5E5E5]"
             />
           </div>
 
@@ -203,107 +217,61 @@ export function AppearanceControls({
               rows={2}
               value={customization.description}
               onChange={(e) => updateCustomization({ description: e.target.value })}
-              className="w-full min-h-[54px] rounded-[6px] border border-[#E5E5E5] bg-white p-2 text-xs text-[#0A0A0A] outline-none transition-colors focus:border-[#0A0A0A] resize-y"
+              className="w-full min-h-[54px] rounded-[6px] border border-[#E5E5E5] bg-[#FAFAFA] p-2.5 text-xs text-[#0A0A0A] outline-none transition-all duration-150 hover:bg-[#F2F2F2] hover:shadow-xs focus:bg-white focus:ring-2 focus:ring-[#0A0A0A]/5 focus:border-[#E5E5E5] resize-y"
             />
-          </div>
-
-          {/* Site Name and Author */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-            <div className="flex flex-col gap-1">
-              <label className="text-xs font-medium text-[#525252]">Site Name</label>
-              <input
-                type="text"
-                value={customization.siteName}
-                placeholder={document.metadata.siteName || "Site or Publication"}
-                onChange={(e) => updateCustomization({ siteName: e.target.value })}
-                className="w-full h-9 rounded-[6px] border border-[#E5E5E5] bg-white px-3 text-xs text-[#0A0A0A] outline-none transition-colors focus:border-[#0A0A0A]"
-              />
-            </div>
-            <div className="flex flex-col gap-1">
-              <label className="text-xs font-medium text-[#525252]">Author or Handle</label>
-              <input
-                type="text"
-                value={customization.author}
-                placeholder="Author name or @handle"
-                onChange={(e) => updateCustomization({ author: e.target.value })}
-                className="w-full h-9 rounded-[6px] border border-[#E5E5E5] bg-white px-3 text-xs text-[#0A0A0A] outline-none transition-colors focus:border-[#0A0A0A]"
-              />
-            </div>
-          </div>
-
-          {/* URL Display Control */}
-          <div className="flex flex-col gap-1.5 pt-1">
-            <div className="flex items-center justify-between">
-              <label className="text-xs font-medium text-[#525252]">Card URL</label>
-              <div className="inline-flex items-center rounded-[6px] border border-[#E5E5E5] bg-[#F7F7F7] p-0.5 gap-0.5">
-                <button
-                  type="button"
-                  onClick={() => handleUrlModeChange("domain")}
-                  className={`px-2.5 py-1 text-[11px] font-medium rounded-[4px] transition-colors ${
-                    customization.urlDisplayMode === "domain"
-                      ? "bg-white text-[#0A0A0A] shadow-xs"
-                      : "text-[#737373] hover:text-[#0A0A0A]"
-                  }`}
-                >
-                  Domain
-                </button>
-                <button
-                  type="button"
-                  onClick={() => handleUrlModeChange("full")}
-                  className={`px-2.5 py-1 text-[11px] font-medium rounded-[4px] transition-colors ${
-                    customization.urlDisplayMode === "full"
-                      ? "bg-white text-[#0A0A0A] shadow-xs"
-                      : "text-[#737373] hover:text-[#0A0A0A]"
-                  }`}
-                >
-                  Full URL
-                </button>
-                <button
-                  type="button"
-                  onClick={() => handleUrlModeChange("none")}
-                  className={`px-2.5 py-1 text-[11px] font-medium rounded-[4px] transition-colors ${
-                    customization.urlDisplayMode === "none"
-                      ? "bg-white text-[#0A0A0A] shadow-xs"
-                      : "text-[#737373] hover:text-[#0A0A0A]"
-                  }`}
-                >
-                  Hidden
-                </button>
-              </div>
-            </div>
-
-            {customization.urlDisplayMode !== "none" && (
-              <input
-                type="text"
-                value={currentDisplayUrl}
-                onChange={(e) => updateCustomization({ customUrl: e.target.value })}
-                placeholder="URL text shown on the card"
-                className="w-full h-9 rounded-[6px] border border-[#E5E5E5] bg-white px-3 text-xs text-[#0A0A0A] outline-none transition-colors focus:border-[#0A0A0A]"
-              />
-            )}
           </div>
         </div>
       </div>
 
-      {/* 3. Thumbnail / Preview Image Control */}
-      <div className="flex flex-col gap-2 pt-3 border-t border-[#E5E5E5]">
-        <div className="flex items-center justify-between">
+      {/* 3. Essential Section: Card Thumbnail (Toggle, Position, and URL) */}
+      <div className="flex flex-col gap-2.5 pt-1">
+        <div className="flex flex-wrap items-center justify-between gap-2">
           <span className="text-[11px] font-semibold uppercase tracking-wider text-[#737373]">
-            Card Thumbnail
+            Thumbnail
           </span>
-          <label className="flex items-center gap-1.5 cursor-pointer text-xs font-medium text-[#0A0A0A]">
-            <input
-              type="checkbox"
-              checked={customization.showImage}
-              onChange={(e) => updateCustomization({ showImage: e.target.checked })}
-              className="size-3.5 rounded accent-[#0A0A0A] cursor-pointer"
-            />
-            <span>Show preview image</span>
-          </label>
+
+          <div className="flex items-center gap-3">
+            {/* Position Selector (Above / Below Title) */}
+            <div className="inline-flex items-center rounded-[6px] border border-[#E5E5E5] bg-[#F7F7F7] p-0.5 gap-0.5">
+              <button
+                type="button"
+                onClick={() => handleImagePlacementChange("above")}
+                className={`px-2.5 py-1 text-[11px] font-medium rounded-[4px] transition-colors ${
+                  currentPlacement === "above"
+                    ? "bg-[#0A0A0A] text-white"
+                    : "text-[#525252] hover:text-[#0A0A0A]"
+                }`}
+              >
+                Above Title
+              </button>
+              <button
+                type="button"
+                onClick={() => handleImagePlacementChange("below")}
+                className={`px-2.5 py-1 text-[11px] font-medium rounded-[4px] transition-colors ${
+                  currentPlacement === "below"
+                    ? "bg-[#0A0A0A] text-white"
+                    : "text-[#525252] hover:text-[#0A0A0A]"
+                }`}
+              >
+                Below Title
+              </button>
+            </div>
+
+            {/* Show / Hide Toggle */}
+            <label className="flex items-center gap-1.5 cursor-pointer text-xs font-medium text-[#0A0A0A]">
+              <input
+                type="checkbox"
+                checked={customization.showImage}
+                onChange={(e) => updateCustomization({ showImage: e.target.checked })}
+                className="size-3.5 rounded accent-[#0A0A0A] cursor-pointer"
+              />
+              <span>Show image</span>
+            </label>
+          </div>
         </div>
 
+        {/* Thumbnail URL and Preview */}
         <div className="flex items-center gap-2">
-          {/* Thumbnail preview square */}
           {customization.imageUrl ? (
             <div className="size-9 rounded-[6px] border border-[#E5E5E5] overflow-hidden shrink-0 bg-[#F7F7F7] flex items-center justify-center">
               {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -322,21 +290,19 @@ export function AppearanceControls({
             </div>
           )}
 
-          {/* Image URL input */}
           <input
             type="text"
             value={customization.imageUrl || ""}
             onChange={(e) => handleThumbnailUrlChange(e.target.value)}
             placeholder="Paste image or thumbnail URL"
-            className="flex-1 h-9 rounded-[6px] border border-[#E5E5E5] bg-white px-3 text-xs text-[#0A0A0A] outline-none transition-colors focus:border-[#0A0A0A]"
+            className="flex-1 h-9 rounded-[6px] border border-[#E5E5E5] bg-[#FAFAFA] px-3 text-xs text-[#0A0A0A] outline-none transition-all duration-150 hover:bg-[#F2F2F2] hover:shadow-xs focus:bg-white focus:ring-2 focus:ring-[#0A0A0A]/5 focus:border-[#E5E5E5]"
           />
 
-          {/* Clear thumbnail button */}
           {customization.imageUrl && (
             <button
               type="button"
               onClick={() => updateCustomization({ imageUrl: null, showImage: false })}
-              className="h-9 px-2.5 rounded-[6px] border border-[#E5E5E5] text-xs font-medium text-[#737373] hover:text-[#0A0A0A] hover:border-[#0A0A0A]/40 transition-colors flex items-center gap-1 shrink-0"
+              className="h-9 px-2.5 rounded-[6px] border border-[#E5E5E5] text-xs font-medium text-[#737373] hover:bg-[#F5F5F5] hover:text-[#0A0A0A] transition-all flex items-center gap-1 shrink-0"
               title="Remove thumbnail"
             >
               <X className="size-3.5" />
@@ -344,7 +310,6 @@ export function AppearanceControls({
             </button>
           )}
 
-          {/* Restore original metadata image */}
           {document.metadata.imageUrl && document.metadata.imageUrl !== customization.imageUrl && (
             <button
               type="button"
@@ -354,7 +319,7 @@ export function AppearanceControls({
                   showImage: true,
                 })
               }
-              className="h-9 px-2.5 rounded-[6px] border border-[#E5E5E5] text-xs font-medium text-[#737373] hover:text-[#0A0A0A] hover:border-[#0A0A0A]/40 transition-colors shrink-0"
+              className="h-9 px-2.5 rounded-[6px] border border-[#E5E5E5] text-xs font-medium text-[#737373] hover:bg-[#F5F5F5] hover:text-[#0A0A0A] transition-all shrink-0"
               title="Restore extracted image"
             >
               Original
@@ -363,84 +328,188 @@ export function AppearanceControls({
         </div>
       </div>
 
-      {/* 4. Appearance: Palette & Typography */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-3 border-t border-[#E5E5E5] items-start">
-        {/* Palette with clean solid active state without borderlines */}
-        <div className="flex flex-col gap-1.5">
-          <span className="text-[11px] font-semibold uppercase tracking-wider text-[#737373]">
-            Palette
-          </span>
-          <div className="grid grid-cols-2 gap-1.5">
-            {COLOR_PRESETS.map((preset) => {
-              const isSelected =
-                customization.backgroundColor === preset.bg &&
-                customization.textColor === preset.text;
-              return (
-                <button
-                  key={preset.name}
-                  type="button"
-                  onClick={() =>
-                    updateCustomization({
-                      backgroundColor: preset.bg,
-                      textColor: preset.text,
-                      accentColor: preset.accent,
-                    })
-                  }
-                  className={`flex items-center justify-between h-8 px-2.5 rounded-[5px] text-[11px] font-medium transition-colors ${
-                    isSelected
-                      ? "bg-[#0A0A0A] text-white border-transparent"
-                      : "bg-[#FAFAFA] text-[#525252] border border-[#E5E5E5] hover:border-[#0A0A0A]/40 hover:text-[#0A0A0A]"
-                  }`}
-                >
-                  <div className="flex items-center gap-1.5 truncate">
-                    <span
-                      className="size-2.5 rounded-full border border-black/20 shrink-0"
-                      style={{ backgroundColor: preset.bg }}
-                    />
-                    <span className="truncate">{preset.name}</span>
-                  </div>
-                  {isSelected && <Check className="size-3 text-white shrink-0 ml-1" />}
-                </button>
-              );
-            })}
+      {/* 4. Essential Section: Card URL Display */}
+      <div className="flex flex-col gap-1.5 pt-1">
+        <div className="flex items-center justify-between">
+          <label className="text-xs font-medium text-[#525252]">Card URL</label>
+          <div className="inline-flex items-center rounded-[6px] border border-[#E5E5E5] bg-[#F7F7F7] p-0.5 gap-0.5">
+            <button
+              type="button"
+              onClick={() => handleUrlModeChange("domain")}
+              className={`px-2.5 py-1 text-[11px] font-medium rounded-[4px] transition-colors ${
+                customization.urlDisplayMode === "domain"
+                  ? "bg-white text-[#0A0A0A] shadow-xs"
+                  : "text-[#737373] hover:text-[#0A0A0A]"
+              }`}
+            >
+              Domain
+            </button>
+            <button
+              type="button"
+              onClick={() => handleUrlModeChange("full")}
+              className={`px-2.5 py-1 text-[11px] font-medium rounded-[4px] transition-colors ${
+                customization.urlDisplayMode === "full"
+                  ? "bg-white text-[#0A0A0A] shadow-xs"
+                  : "text-[#737373] hover:text-[#0A0A0A]"
+              }`}
+            >
+              Full URL
+            </button>
+            <button
+              type="button"
+              onClick={() => handleUrlModeChange("none")}
+              className={`px-2.5 py-1 text-[11px] font-medium rounded-[4px] transition-colors ${
+                customization.urlDisplayMode === "none"
+                  ? "bg-white text-[#0A0A0A] shadow-xs"
+                  : "text-[#737373] hover:text-[#0A0A0A]"
+              }`}
+            >
+              Hidden
+            </button>
           </div>
         </div>
 
-        {/* Typography & Reset */}
-        <div className="flex flex-col gap-1.5">
-          <div className="flex items-center justify-between">
-            <span className="text-[11px] font-semibold uppercase tracking-wider text-[#737373]">
-              Font
+        {customization.urlDisplayMode !== "none" && (
+          <input
+            type="text"
+            value={currentDisplayUrl}
+            onChange={(e) => updateCustomization({ customUrl: e.target.value })}
+            placeholder="URL text shown on the card"
+            className="w-full h-9 rounded-[6px] border border-[#E5E5E5] bg-[#FAFAFA] px-3 text-xs text-[#0A0A0A] outline-none transition-all duration-150 hover:bg-[#F2F2F2] hover:shadow-xs focus:bg-white focus:ring-2 focus:ring-[#0A0A0A]/5 focus:border-[#E5E5E5]"
+          />
+        )}
+      </div>
+
+      {/* 5. Advanced Settings (Collapsible Dropdown for Detail Controls) */}
+      <div className="pt-2 border-t border-[#E5E5E5]">
+        <button
+          type="button"
+          onClick={() => setShowAdvanced(!showAdvanced)}
+          className="w-full flex items-center justify-between py-2 text-xs font-medium text-[#525252] hover:text-[#0A0A0A] transition-colors select-none"
+        >
+          <div className="flex items-center gap-2">
+            <SlidersHorizontal className="size-3.5 text-[#737373]" />
+            <span className="font-semibold text-[#0A0A0A]">Advanced Settings</span>
+            <span className="text-[11px] text-[#737373]">
+              (Site name, author, color palette, typography)
             </span>
-            <button
-              type="button"
-              onClick={onReset}
-              className="text-[11px] text-[#737373] hover:text-[#0A0A0A] hover:underline transition-colors"
-            >
-              Reset defaults
-            </button>
           </div>
-          <div className="flex gap-1.5">
-            {(["satoshi", "serif", "mono"] as TypographyFamily[]).map((font) => {
-              const label = font === "satoshi" ? "Sans" : font === "serif" ? "Serif" : "Mono";
-              const isSelected = customization.fontFamily === font;
-              return (
-                <button
-                  key={font}
-                  type="button"
-                  onClick={() => updateCustomization({ fontFamily: font })}
-                  className={`flex-1 h-8 rounded-[5px] border text-xs font-medium transition-colors ${
-                    isSelected
-                      ? "border-[#0A0A0A] bg-[#0A0A0A] text-white"
-                      : "border-[#E5E5E5] bg-white text-[#525252] hover:border-[#0A0A0A] hover:text-[#0A0A0A]"
-                  }`}
-                >
-                  {label}
-                </button>
-              );
-            })}
+          <ChevronDown
+            className={`size-4 text-[#737373] transition-transform duration-200 ${
+              showAdvanced ? "rotate-180" : ""
+            }`}
+          />
+        </button>
+
+        {showAdvanced && (
+          <div className="pt-3 pb-1 flex flex-col gap-4 animate-in fade-in-50 duration-150">
+            {/* Site Name and Author */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+              <div className="flex flex-col gap-1">
+                <label className="text-xs font-medium text-[#525252]">Site Name</label>
+                <input
+                  type="text"
+                  value={customization.siteName}
+                  placeholder={document.metadata.siteName || "Site or Publication"}
+                  onChange={(e) => updateCustomization({ siteName: e.target.value })}
+                  className="w-full h-9 rounded-[6px] border border-[#E5E5E5] bg-[#FAFAFA] px-3 text-xs text-[#0A0A0A] outline-none transition-all duration-150 hover:bg-[#F2F2F2] hover:shadow-xs focus:bg-white focus:ring-2 focus:ring-[#0A0A0A]/5 focus:border-[#E5E5E5]"
+                />
+              </div>
+              <div className="flex flex-col gap-1">
+                <label className="text-xs font-medium text-[#525252]">Author or Handle</label>
+                <input
+                  type="text"
+                  value={customization.author}
+                  placeholder="Author name or @handle"
+                  onChange={(e) => updateCustomization({ author: e.target.value })}
+                  className="w-full h-9 rounded-[6px] border border-[#E5E5E5] bg-[#FAFAFA] px-3 text-xs text-[#0A0A0A] outline-none transition-all duration-150 hover:bg-[#F2F2F2] hover:shadow-xs focus:bg-white focus:ring-2 focus:ring-[#0A0A0A]/5 focus:border-[#E5E5E5]"
+                />
+              </div>
+            </div>
+
+            {/* Palette & Typography */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2 border-t border-[#E5E5E5]/70 items-start">
+              {/* Palette */}
+              <div className="flex flex-col gap-1.5">
+                <span className="text-[11px] font-semibold uppercase tracking-wider text-[#737373]">
+                  Color Palette
+                </span>
+                <div className="grid grid-cols-2 gap-1.5">
+                  {COLOR_PRESETS.map((preset) => {
+                    const isSelected =
+                      customization.backgroundColor === preset.bg &&
+                      customization.textColor === preset.text;
+                    return (
+                      <button
+                        key={preset.name}
+                        type="button"
+                        onClick={() =>
+                          updateCustomization({
+                            backgroundColor: preset.bg,
+                            textColor: preset.text,
+                            accentColor: preset.accent,
+                          })
+                        }
+                        className={`flex items-center justify-between h-8 px-2.5 rounded-[5px] text-[11px] font-medium transition-colors ${
+                          isSelected
+                            ? "bg-[#0A0A0A] text-white border-transparent"
+                            : "bg-[#FAFAFA] text-[#525252] border border-[#E5E5E5] hover:bg-[#F0F0F0] hover:text-[#0A0A0A]"
+                        }`}
+                      >
+                        <div className="flex items-center gap-1.5 truncate">
+                          <span
+                            className="size-2.5 rounded-full border border-black/20 shrink-0"
+                            style={{ backgroundColor: preset.bg }}
+                          />
+                          <span className="truncate">{preset.name}</span>
+                        </div>
+                        {isSelected && <Check className="size-3 text-white shrink-0 ml-1" />}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* Typography Font */}
+              <div className="flex flex-col gap-1.5">
+                <span className="text-[11px] font-semibold uppercase tracking-wider text-[#737373]">
+                  Typography Font
+                </span>
+                <div className="flex gap-1.5">
+                  {(["satoshi", "serif", "mono"] as TypographyFamily[]).map((font) => {
+                    const label = font === "satoshi" ? "Sans" : font === "serif" ? "Serif" : "Mono";
+                    const isSelected = customization.fontFamily === font;
+                    return (
+                      <button
+                        key={font}
+                        type="button"
+                        onClick={() => updateCustomization({ fontFamily: font })}
+                        className={`flex-1 h-8 rounded-[5px] border text-xs font-medium transition-colors ${
+                          isSelected
+                            ? "border-[#0A0A0A] bg-[#0A0A0A] text-white"
+                            : "border-[#E5E5E5] bg-[#FAFAFA] text-[#525252] hover:bg-[#F0F0F0] hover:text-[#0A0A0A]"
+                        }`}
+                      >
+                        {label}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            </div>
+
+            {/* Reset Defaults Action */}
+            <div className="pt-2 flex justify-end border-t border-[#E5E5E5]/70">
+              <button
+                type="button"
+                onClick={onReset}
+                className="text-xs text-[#737373] hover:text-[#0A0A0A] hover:underline transition-colors"
+              >
+                Reset all customizations to defaults
+              </button>
+            </div>
           </div>
-        </div>
+        )}
       </div>
     </div>
   );

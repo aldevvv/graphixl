@@ -49,6 +49,7 @@ export function composeInitialCardDocument(
       showImage: Boolean(metadata.imageUrl),
       imageUrl: metadata.imageUrl,
       fontFamily: "satoshi",
+      imagePlacement: "below",
       urlDisplayMode: "domain",
       customUrl: "",
     },

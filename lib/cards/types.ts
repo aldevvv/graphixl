@@ -22,6 +22,7 @@ export const ASPECT_RATIO_CONFIGS: Record<AspectRatioPreset, AspectRatioConfig> 
 };
 
 export type UrlDisplayMode = "domain" | "full" | "none";
+export type ImagePlacement = "above" | "below";
 
 export interface CardCustomization {
   title: string;
@@ -34,6 +35,7 @@ export interface CardCustomization {
   textColor: string;
   showImage: boolean;
   imageUrl: string | null;
+  imagePlacement?: ImagePlacement;
   fontFamily: TypographyFamily;
   urlDisplayMode?: UrlDisplayMode;
   customUrl?: string;

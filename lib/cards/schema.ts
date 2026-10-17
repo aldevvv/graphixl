@@ -17,6 +17,7 @@ export const TemplateIdSchema = z.enum([
 
 export const TypographyFamilySchema = z.enum(["satoshi", "serif", "mono"]);
 export const UrlDisplayModeSchema = z.enum(["domain", "full", "none"]);
+export const ImagePlacementSchema = z.enum(["above", "below"]);
 
 export const CardCustomizationSchema = z.object({
   title: z.string().max(300),
@@ -29,6 +30,7 @@ export const CardCustomizationSchema = z.object({
   textColor: z.string().regex(/^#[0-9a-fA-F]{3,8}$/),
   showImage: z.boolean(),
   imageUrl: z.string().nullable().default(null),
+  imagePlacement: ImagePlacementSchema.default("below"),
   fontFamily: TypographyFamilySchema,
   urlDisplayMode: UrlDisplayModeSchema.default("domain"),
   customUrl: z.string().max(2048).optional(),

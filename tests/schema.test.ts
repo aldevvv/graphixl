@@ -1,6 +1,10 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { CardDocumentSchema, RenderRequestSchema } from "../lib/cards/schema";
+import {
+  CardDocumentSchema,
+  RenderRequestSchema,
+  CardCustomizationSchema,
+} from "../lib/cards/schema";
 import { CardDocument } from "../lib/cards/types";
 
 const VALID_DOC: CardDocument = {
@@ -110,4 +114,24 @@ test("getCardDisplayUrl: respects customUrl override", async () => {
     },
   };
   assert.equal(getCardDisplayUrl(doc), "mhdalif.id/custom-slug");
+});
+
+test("CardCustomizationSchema: validates imagePlacement above and below", () => {
+  const parsedAbove = CardCustomizationSchema.safeParse({
+    ...VALID_DOC.customization,
+    imagePlacement: "above",
+  });
+  assert.equal(parsedAbove.success, true);
+  if (parsedAbove.success) {
+    assert.equal(parsedAbove.data.imagePlacement, "above");
+  }
+
+  const parsedBelow = CardCustomizationSchema.safeParse({
+    ...VALID_DOC.customization,
+    imagePlacement: "below",
+  });
+  assert.equal(parsedBelow.success, true);
+  if (parsedBelow.success) {
+    assert.equal(parsedBelow.data.imagePlacement, "below");
+  }
 });

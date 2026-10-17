@@ -70,18 +70,10 @@ export function ProductTemplate({ document, dimensions, resolvedImageUrl }: Temp
       </div>
 
       {/* Main Content & Media */}
-      <div
-        style={{
-          display: "flex",
-          flexDirection: isVertical ? "column" : "row",
-          alignItems: "center",
-          gap: "36px",
-          flex: 1,
-          margin: "24px 0",
-          width: "100%",
-        }}
-      >
-        {resolvedImageUrl && customization.showImage && (
+      {(() => {
+        const isImageAbove = customization.imagePlacement === "above";
+
+        const imageElement = resolvedImageUrl && customization.showImage ? (
           <div
             style={{
               display: "flex",
@@ -106,43 +98,71 @@ export function ProductTemplate({ document, dimensions, resolvedImageUrl }: Temp
               }}
             />
           </div>
-        )}
+        ) : null;
 
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "center",
-            flex: 1,
-          }}
-        >
-          <h1
+        const textElement = (
+          <div
             style={{
-              margin: 0,
-              fontSize: `${headlineSize}px`,
-              fontWeight: 700,
-              lineHeight: 1.15,
-              letterSpacing: "-0.03em",
-              color: customization.textColor,
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "center",
+              flex: 1,
             }}
           >
-            {customization.title}
-          </h1>
-
-          {customization.description && (
-            <p
+            <h1
               style={{
-                margin: "18px 0 0 0",
-                fontSize: "24px",
-                lineHeight: 1.5,
-                opacity: 0.75,
+                margin: 0,
+                fontSize: `${headlineSize}px`,
+                fontWeight: 700,
+                lineHeight: 1.15,
+                letterSpacing: "-0.03em",
+                color: customization.textColor,
               }}
             >
-              {customization.description}
-            </p>
-          )}
-        </div>
-      </div>
+              {customization.title}
+            </h1>
+
+            {customization.description && (
+              <p
+                style={{
+                  margin: "18px 0 0 0",
+                  fontSize: "24px",
+                  lineHeight: 1.5,
+                  opacity: 0.75,
+                }}
+              >
+                {customization.description}
+              </p>
+            )}
+          </div>
+        );
+
+        return (
+          <div
+            style={{
+              display: "flex",
+              flexDirection: isVertical ? "column" : "row",
+              alignItems: "center",
+              gap: "36px",
+              flex: 1,
+              margin: "24px 0",
+              width: "100%",
+            }}
+          >
+            {isImageAbove ? (
+              <>
+                {imageElement}
+                {textElement}
+              </>
+            ) : (
+              <>
+                {textElement}
+                {imageElement}
+              </>
+            )}
+          </div>
+        );
+      })()}
 
       {/* Footer Info */}
       <div

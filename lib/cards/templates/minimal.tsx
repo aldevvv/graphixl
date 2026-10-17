@@ -58,54 +58,10 @@ export function MinimalTemplate({
       </div>
 
       {/* Center: Typography focus with optional thumbnail */}
-      <div
-        style={{
-          display: "flex",
-          flexDirection: isLandscape && resolvedImageUrl && customization.showImage ? "row" : "column",
-          alignItems: isLandscape ? "center" : "flex-start",
-          justifyContent: "space-between",
-          gap: "32px",
-          width: "100%",
-        }}
-      >
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            gap: "20px",
-            flex: 1,
-            minWidth: 0,
-          }}
-        >
-          <h1
-            style={{
-              margin: 0,
-              fontSize: `${headlineSize}px`,
-              fontWeight: 700,
-              lineHeight: 1.12,
-              letterSpacing: "-0.03em",
-              color: customization.textColor,
-            }}
-          >
-            {customization.title}
-          </h1>
+      {(() => {
+        const isImageAbove = customization.imagePlacement === "above";
 
-          {customization.description && (
-            <p
-              style={{
-                margin: 0,
-                fontSize: "26px",
-                lineHeight: 1.5,
-                opacity: 0.7,
-                maxWidth: "85%",
-              }}
-            >
-              {customization.description}
-            </p>
-          )}
-        </div>
-
-        {resolvedImageUrl && customization.showImage && (
+        const imageElement = resolvedImageUrl && customization.showImage ? (
           <div
             style={{
               display: "flex",
@@ -130,8 +86,72 @@ export function MinimalTemplate({
               }}
             />
           </div>
-        )}
-      </div>
+        ) : null;
+
+        const textElement = (
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              gap: "20px",
+              flex: 1,
+              minWidth: 0,
+            }}
+          >
+            <h1
+              style={{
+                margin: 0,
+                fontSize: `${headlineSize}px`,
+                fontWeight: 700,
+                lineHeight: 1.12,
+                letterSpacing: "-0.03em",
+                color: customization.textColor,
+              }}
+            >
+              {customization.title}
+            </h1>
+
+            {customization.description && (
+              <p
+                style={{
+                  margin: 0,
+                  fontSize: "26px",
+                  lineHeight: 1.5,
+                  opacity: 0.7,
+                  maxWidth: "85%",
+                }}
+              >
+                {customization.description}
+              </p>
+            )}
+          </div>
+        );
+
+        return (
+          <div
+            style={{
+              display: "flex",
+              flexDirection: isLandscape && resolvedImageUrl && customization.showImage ? "row" : "column",
+              alignItems: isLandscape ? "center" : "flex-start",
+              justifyContent: "space-between",
+              gap: "32px",
+              width: "100%",
+            }}
+          >
+            {isImageAbove ? (
+              <>
+                {imageElement}
+                {textElement}
+              </>
+            ) : (
+              <>
+                {textElement}
+                {imageElement}
+              </>
+            )}
+          </div>
+        );
+      })()}
 
       {/* Bottom: Accent bar & subtle details */}
       <div

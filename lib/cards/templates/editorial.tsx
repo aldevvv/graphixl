@@ -91,56 +91,10 @@ export function EditorialTemplate({ document, dimensions, resolvedImageUrl }: Te
       </div>
 
       {/* Main Body */}
-      <div
-        style={{
-          display: "flex",
-          flexDirection: isLandscape && resolvedImageUrl && customization.showImage ? "row" : "column",
-          alignItems: "center",
-          gap: "36px",
-          flex: 1,
-          justifyContent: "center",
-          marginTop: "24px",
-          marginBottom: "24px",
-          width: "100%",
-        }}
-      >
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "center",
-            flex: 1,
-            minWidth: 0,
-          }}
-        >
-          <h1
-            style={{
-              margin: 0,
-              fontSize: `${headlineSize}px`,
-              fontWeight: 700,
-              lineHeight: 1.15,
-              letterSpacing: "-0.03em",
-              color: customization.textColor,
-            }}
-          >
-            {customization.title}
-          </h1>
+      {(() => {
+        const isImageAbove = customization.imagePlacement === "above";
 
-          {customization.description && (
-            <p
-              style={{
-                margin: "20px 0 0 0",
-                fontSize: `${bodySize}px`,
-                lineHeight: 1.5,
-                opacity: 0.75,
-              }}
-            >
-              {customization.description}
-            </p>
-          )}
-        </div>
-
-        {resolvedImageUrl && customization.showImage && (
+        const imageElement = resolvedImageUrl && customization.showImage ? (
           <div
             style={{
               display: "flex",
@@ -167,8 +121,74 @@ export function EditorialTemplate({ document, dimensions, resolvedImageUrl }: Te
               }}
             />
           </div>
-        )}
-      </div>
+        ) : null;
+
+        const textElement = (
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "center",
+              flex: 1,
+              minWidth: 0,
+            }}
+          >
+            <h1
+              style={{
+                margin: 0,
+                fontSize: `${headlineSize}px`,
+                fontWeight: 700,
+                lineHeight: 1.15,
+                letterSpacing: "-0.03em",
+                color: customization.textColor,
+              }}
+            >
+              {customization.title}
+            </h1>
+
+            {customization.description && (
+              <p
+                style={{
+                  margin: "20px 0 0 0",
+                  fontSize: `${bodySize}px`,
+                  lineHeight: 1.5,
+                  opacity: 0.75,
+                }}
+              >
+                {customization.description}
+              </p>
+            )}
+          </div>
+        );
+
+        return (
+          <div
+            style={{
+              display: "flex",
+              flexDirection: isLandscape && resolvedImageUrl && customization.showImage ? "row" : "column",
+              alignItems: "center",
+              gap: "36px",
+              flex: 1,
+              justifyContent: "center",
+              marginTop: "24px",
+              marginBottom: "24px",
+              width: "100%",
+            }}
+          >
+            {isImageAbove ? (
+              <>
+                {imageElement}
+                {textElement}
+              </>
+            ) : (
+              <>
+                {textElement}
+                {imageElement}
+              </>
+            )}
+          </div>
+        );
+      })()}
 
       {/* Footer Details */}
       <div
