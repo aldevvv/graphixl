@@ -7,6 +7,7 @@ const nextConfig: NextConfig = {
   },
   cacheComponents: true,
   partialPrefetching: true,
+  serverExternalPackages: ["@resvg/resvg-js"],
   turbopack: {
     rules: {
       "*.css": {

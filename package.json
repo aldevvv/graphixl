@@ -14,7 +14,8 @@
     "start": "next start",
     "lint": "eslint",
     "typecheck": "next typegen && tsc --noEmit",
-    "verify": "pnpm lint && pnpm typecheck && pnpm build"
+    "test": "tsc -p tsconfig.test.json && node --test .test-build/tests/*.test.js",
+    "verify": "pnpm lint && pnpm typecheck && pnpm test && pnpm build"
   },
   "dependencies": {
     "@base-ui/react": "^1.9.0",

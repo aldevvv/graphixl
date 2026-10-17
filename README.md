@@ -22,11 +22,14 @@ Graphixl streamlines this process:
 
 ## Development Status
 
-Graphixl is in its **early development stage**.
+Graphixl provides a complete single-page application workflow for generating social cards:
 
-The foundational application shell, UI component system, build pipelines, and core dependencies (Satori, Resvg, Cheerio, Zod) are established and verified. Core domain services, including the Link Resolver API, Card Engine template registry, and Studio interface, are currently in active design and implementation.
+- **Link Resolver API (`/api/resolve`):** Automated extraction of Open Graph and HTML metadata with multi-layer SSRF mitigation and DNS validation.
+- **Card Engine (`/api/render`):** Declarative Zod schemas, Satori SVG vector compilation, and `@resvg/resvg-js` PNG rasterization.
+- **Studio Interface:** Responsive live canvas preview with real-time controls for templates, aspect ratios, typography, and color schemes.
+- **Card Templates:** Four built-in templates (Editorial, Minimal, Product, and Repository) formatted for five standard social aspect ratios.
 
-For detailed information on subsystem boundaries and the implementation roadmap, see [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
+For detailed information on subsystem boundaries and architectural decisions, see [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
 
 ---
 
@@ -126,7 +129,8 @@ nvm use
 | `pnpm start` | Runs the compiled production server. |
 | `pnpm lint` | Runs ESLint to validate code quality. |
 | `pnpm typecheck` | Generates Next.js route types and runs TypeScript type checking (`next typegen && tsc --noEmit`). |
-| `pnpm verify` | Executes `lint`, `typecheck`, and `build` in sequence. |
+| `pnpm test` | Executes the automated test suite (`tsc -p tsconfig.test.json && node --test`). |
+| `pnpm verify` | Executes `lint`, `typecheck`, `test`, and `build` in sequence. |
 | `pnpm audit --prod` | Checks production dependencies for known vulnerabilities. |
 
 ---

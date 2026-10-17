@@ -235,13 +235,12 @@ sequenceDiagram
 | Component | Status | Details |
 | --------- | ------ | ------- |
 | Next.js App Shell | Implemented | Next.js 16 with App Router, Turbopack, React 19, TypeScript |
-| UI Component Library | Implemented | shadcn Base Nova preset in `app/globals.css`, Lucide icons |
-| Tooling and CI | Implemented | pnpm, ESLint 9, TypeScript typecheck, GitHub Actions CI workflow |
-| Installed Dependencies | Implemented | Satori, `@resvg/resvg-js`, Cheerio, Zod, and Framer Motion |
-| Link Resolver API | Planned | SSRF protection, HTTP retrieval, Cheerio parser, NormalizedMetadata output |
-| Studio Interface | Planned | URL input bar, live preview canvas, customization controls, CardDocument composition |
-| Card Engine Core | Planned | CardDocument schema, template registry, Satori SVG compiler, Resvg export endpoint |
-| Preset Templates | Planned | Curated library of card templates across 5 planned aspect ratios |
+| UI Component Library | Implemented | Warm neutral theme, Satoshi typography, custom SVG marks |
+| Tooling and CI | Implemented | pnpm, ESLint 9, TypeScript typecheck, automated test suite, GitHub Actions CI |
+| Link Resolver API | Implemented | Anti-SSRF DNS validation, safe redirect following, Cheerio extraction, GitHub adapter (`/api/resolve`) |
+| Studio Interface | Implemented | Single-page UI on `/`, live responsive preview canvas, template and style controls, download triggers |
+| Card Engine Core | Implemented | Declarative Zod schemas, Satori SVG compiler, `@resvg/resvg-js` PNG rasterization (`/api/render`) |
+| Preset Templates | Implemented | Four distinct templates (Editorial, Minimal, Product, Repository) across 5 aspect ratios |
 
 ---
 
