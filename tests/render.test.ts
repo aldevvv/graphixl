@@ -35,6 +35,7 @@ const BASE_DOC: CardDocument = {
     showImage: false,
     imageUrl: null,
     fontFamily: "satoshi",
+    urlDisplayMode: "domain",
   },
 };
 

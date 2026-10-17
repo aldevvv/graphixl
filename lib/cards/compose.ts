@@ -49,6 +49,8 @@ export function composeInitialCardDocument(
       showImage: Boolean(metadata.imageUrl),
       imageUrl: metadata.imageUrl,
       fontFamily: "satoshi",
+      urlDisplayMode: "domain",
+      customUrl: "",
     },
   };
 }

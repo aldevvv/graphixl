@@ -30,6 +30,7 @@ const VALID_DOC: CardDocument = {
     showImage: false,
     imageUrl: null,
     fontFamily: "satoshi",
+    urlDisplayMode: "domain",
   },
 };
 
@@ -67,4 +68,46 @@ test("RenderRequestSchema: validates render request payload", () => {
   };
   const parsed = RenderRequestSchema.safeParse(req);
   assert.equal(parsed.success, true);
+});
+
+test("getCardDisplayUrl: returns domain only when urlDisplayMode is 'domain'", async () => {
+  const { getCardDisplayUrl } = await import("../lib/cards/types");
+  const doc = {
+    url: "https://www.mhdalif.id/blog/hermes-agent-changed-how-i-turn-ideas-into-reality",
+    customization: { urlDisplayMode: "domain" as const },
+  };
+  assert.equal(getCardDisplayUrl(doc), "www.mhdalif.id");
+});
+
+test("getCardDisplayUrl: returns full path when urlDisplayMode is 'full'", async () => {
+  const { getCardDisplayUrl } = await import("../lib/cards/types");
+  const doc = {
+    url: "https://www.mhdalif.id/blog/hermes-agent-changed-how-i-turn-ideas-into-reality",
+    customization: { urlDisplayMode: "full" as const },
+  };
+  assert.equal(
+    getCardDisplayUrl(doc),
+    "www.mhdalif.id/blog/hermes-agent-changed-how-i-turn-ideas-into-reality"
+  );
+});
+
+test("getCardDisplayUrl: returns empty string when urlDisplayMode is 'none'", async () => {
+  const { getCardDisplayUrl } = await import("../lib/cards/types");
+  const doc = {
+    url: "https://www.mhdalif.id/blog/hermes-agent-changed-how-i-turn-ideas-into-reality",
+    customization: { urlDisplayMode: "none" as const },
+  };
+  assert.equal(getCardDisplayUrl(doc), "");
+});
+
+test("getCardDisplayUrl: respects customUrl override", async () => {
+  const { getCardDisplayUrl } = await import("../lib/cards/types");
+  const doc = {
+    url: "https://www.mhdalif.id/blog/hermes-agent-changed-how-i-turn-ideas-into-reality",
+    customization: {
+      urlDisplayMode: "full" as const,
+      customUrl: "mhdalif.id/custom-slug",
+    },
+  };
+  assert.equal(getCardDisplayUrl(doc), "mhdalif.id/custom-slug");
 });

@@ -1,11 +1,13 @@
 import React from "react";
 import { TemplateProps } from "./editorial";
+import { getCardDisplayUrl } from "../types";
 
 export function ProductTemplate({ document, dimensions, resolvedImageUrl }: TemplateProps): React.JSX.Element {
   const { customization, aspectRatio } = document;
   const isVertical = aspectRatio === "story" || aspectRatio === "portrait";
   const padding = Math.round(dimensions.width * 0.065);
   const headlineSize = isVertical ? 56 : 48;
+  const displayUrl = getCardDisplayUrl(document);
 
   const fontStack =
     customization.fontFamily === "serif"
@@ -50,7 +52,7 @@ export function ProductTemplate({ document, dimensions, resolvedImageUrl }: Temp
               letterSpacing: "0.02em",
             }}
           >
-            {customization.siteName || "Product"}
+            {customization.siteName || document.metadata.siteName || "Product"}
           </span>
         </div>
 
@@ -76,14 +78,16 @@ export function ProductTemplate({ document, dimensions, resolvedImageUrl }: Temp
           gap: "36px",
           flex: 1,
           margin: "24px 0",
+          width: "100%",
         }}
       >
         {resolvedImageUrl && customization.showImage && (
           <div
             style={{
               display: "flex",
-              width: isVertical ? "100%" : "48%",
-              height: isVertical ? "50%" : "100%",
+              width: isVertical ? "100%" : "44%",
+              height: isVertical ? "420px" : "320px",
+              flexShrink: 0,
               borderRadius: "16px",
               overflow: "hidden",
               border: "1px solid rgba(23, 24, 21, 0.1)",
@@ -98,6 +102,7 @@ export function ProductTemplate({ document, dimensions, resolvedImageUrl }: Temp
                 width: "100%",
                 height: "100%",
                 objectFit: "cover",
+                display: "block",
               }}
             />
           </div>
@@ -148,11 +153,31 @@ export function ProductTemplate({ document, dimensions, resolvedImageUrl }: Temp
           paddingTop: "20px",
           borderTop: "1px solid rgba(23, 24, 21, 0.1)",
           fontSize: "17px",
-          opacity: 0.6,
+          opacity: 0.75,
         }}
       >
-        <span>View product</span>
-        <span>graphixl</span>
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: "8px",
+            maxWidth: "75%",
+            overflow: "hidden",
+          }}
+        >
+          <span
+            style={{
+              fontWeight: 600,
+              fontSize: "17px",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+              whiteSpace: "nowrap",
+            }}
+          >
+            {displayUrl || "View product"}
+          </span>
+        </div>
+        <span style={{ opacity: 0.5 }}>graphixl</span>
       </div>
     </div>
   );

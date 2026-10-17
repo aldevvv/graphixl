@@ -45,9 +45,24 @@ export function extractMetadataFromHtml(html: string, pageUrl: string): Normaliz
   const metaDesc = cleanText($('meta[name="description"]').attr("content"));
   const description = ogDesc || twitterDesc || metaDesc || "";
 
-  // Site name
-  const ogSiteName = cleanText($('meta[property="og:site_name"]').attr("content"));
-  const siteName = ogSiteName || parsedUrl.hostname.replace(/^www\./, "");
+  // Site name extraction: og:site_name -> application-name -> title separator -> clean domain
+  const ogSiteName = cleanText(
+    $('meta[property="og:site_name"]').attr("content") ||
+    $('meta[name="og:site_name"]').attr("content") ||
+    $('meta[name="application-name"]').attr("content") ||
+    $('meta[property="al:android:app_name"]').attr("content") ||
+    $('meta[property="al:ios:app_name"]').attr("content")
+  );
+
+  let extractedSiteName = ogSiteName;
+  if (!extractedSiteName && htmlTitle) {
+    const parts = htmlTitle.split(/\s+[|\-·]\s+/);
+    if (parts.length > 1 && parts[parts.length - 1].trim().length > 1) {
+      extractedSiteName = parts[parts.length - 1].trim();
+    }
+  }
+
+  const siteName = extractedSiteName || parsedUrl.hostname.replace(/^www\./, "");
 
   // Image extraction
   const ogImage = $('meta[property="og:image"]').attr("content") ||

@@ -59,7 +59,7 @@ export function ExportControls({ document }: ExportControlsProps): React.JSX.Ele
   };
 
   return (
-    <div className="w-full flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 pt-6 border-t border-[#E5E5E5]">
+    <div className="w-full flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
       {/* Format & Resolution Pickers */}
       <div className="flex flex-wrap items-center gap-3">
         {/* Format Selector */}

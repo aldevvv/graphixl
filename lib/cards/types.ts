@@ -21,6 +21,8 @@ export const ASPECT_RATIO_CONFIGS: Record<AspectRatioPreset, AspectRatioConfig> 
   social: { width: 1200, height: 630, label: "Social Share", ratio: "1.91:1" },
 };
 
+export type UrlDisplayMode = "domain" | "full" | "none";
+
 export interface CardCustomization {
   title: string;
   description: string;
@@ -33,6 +35,8 @@ export interface CardCustomization {
   showImage: boolean;
   imageUrl: string | null;
   fontFamily: TypographyFamily;
+  urlDisplayMode?: UrlDisplayMode;
+  customUrl?: string;
 }
 
 export interface CardDocument {
@@ -43,4 +47,37 @@ export interface CardDocument {
   aspectRatio: AspectRatioPreset;
   metadata: NormalizedMetadata;
   customization: CardCustomization;
+}
+
+export function getCardDisplayUrl(document: {
+  url?: string;
+  customization?: {
+    urlDisplayMode?: UrlDisplayMode;
+    customUrl?: string;
+  };
+}): string {
+  const mode = document.customization?.urlDisplayMode ?? "domain";
+  if (mode === "none") {
+    return "";
+  }
+  if (document.customization?.customUrl && document.customization.customUrl.trim().length > 0) {
+    return document.customization.customUrl.trim();
+  }
+  const rawUrl = document.url || "";
+  if (!rawUrl) return "";
+
+  try {
+    const parsed = new URL(
+      rawUrl.startsWith("http://") || rawUrl.startsWith("https://")
+        ? rawUrl
+        : `https://${rawUrl}`
+    );
+    if (mode === "domain") {
+      return parsed.hostname;
+    }
+    const pathAndSearch = (parsed.pathname === "/" ? "" : parsed.pathname) + parsed.search;
+    return `${parsed.hostname}${pathAndSearch}`;
+  } catch {
+    return rawUrl;
+  }
 }

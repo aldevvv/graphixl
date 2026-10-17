@@ -11,29 +11,25 @@ interface CardPreviewProps {
 
 export function CardPreview({ document, isLoading }: CardPreviewProps): React.JSX.Element {
   const containerRef = useRef<HTMLDivElement>(null);
-  const [scale, setScale] = useState<number>(0.8);
+  const [scale, setScale] = useState<number>(0.75);
 
   const config = ASPECT_RATIO_CONFIGS[document.aspectRatio] || ASPECT_RATIO_CONFIGS.social;
 
   useEffect(() => {
     const updateScale = () => {
       if (!containerRef.current) return;
-      const availableWidth = containerRef.current.clientWidth - 32; // account for padding
+      const availableWidth = containerRef.current.clientWidth - 32;
       if (availableWidth <= 0 || config.width <= 0) return;
 
-      // Available height based on viewport (max ~72vh or 740px)
+      // Compact viewport height limit so both canvas and controls remain comfortable
       const viewportMaxHeight =
-        typeof window !== "undefined" ? Math.min(window.innerHeight * 0.72, 740) : 600;
+        typeof window !== "undefined" ? Math.min(window.innerHeight * 0.52, 540) : 460;
 
       const scaleByWidth = availableWidth / config.width;
       const scaleByHeight = viewportMaxHeight / config.height;
 
-      // Vertical formats (story/portrait) respect height constraint
-      if (config.height > config.width) {
-        setScale(Math.min(scaleByWidth, scaleByHeight));
-      } else {
-        setScale(Math.min(scaleByWidth, 1));
-      }
+      // Fit within both width and height constraints
+      setScale(Math.min(scaleByWidth, scaleByHeight, 1));
     };
 
     updateScale();
@@ -52,22 +48,24 @@ export function CardPreview({ document, isLoading }: CardPreviewProps): React.JS
   const targetWidth = Math.round(config.width * scale);
   const targetHeight = Math.round(config.height * scale);
 
+  const resolvedImageUrl = document.customization.showImage
+    ? document.customization.imageUrl
+    : null;
+
   return (
     <div className="relative w-full flex flex-col items-center">
-      {/* Canvas Metadata */}
-      <div className="mb-2.5 flex items-center justify-between w-full max-w-[1040px] px-1 text-[13px] text-[#737373]">
-        <span className="font-medium text-[#0A0A0A]">
-          {config.label}
-        </span>
+      {/* Canvas Header Tag */}
+      <div className="mb-2 flex items-center justify-between w-full px-1 text-xs text-[#737373]">
+        <span className="font-semibold text-[#0A0A0A]">{config.label}</span>
         <span>
           {config.width} × {config.height} px
         </span>
       </div>
 
-      {/* Main Canvas Stage (Centered, Clean Single Boundary) */}
+      {/* Main Canvas Stage (Centered, Matching Main 1120px Section Width) */}
       <div
         ref={containerRef}
-        className="w-full max-w-[1040px] flex items-center justify-center p-3 sm:p-5 rounded-[12px] bg-[#FAFAFA] border border-[#E5E5E5]"
+        className="w-full flex items-center justify-center p-4 sm:p-6 rounded-[12px] bg-[#FAFAFA] border border-[#E5E5E5]"
       >
         <div
           className="relative overflow-hidden rounded-[8px] border border-[#E5E5E5] bg-white shadow-[0_2px_12px_rgba(0,0,0,0.04)] transition-all duration-200"
@@ -89,7 +87,7 @@ export function CardPreview({ document, isLoading }: CardPreviewProps): React.JS
               userSelect: "none",
             }}
           >
-            {renderCardComponent(document, config, document.customization.imageUrl)}
+            {renderCardComponent(document, config, resolvedImageUrl)}
           </div>
 
           {/* Loading Overlay */}

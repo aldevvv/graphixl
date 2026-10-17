@@ -1,11 +1,13 @@
 import React from "react";
 import { TemplateProps } from "./editorial";
+import { getCardDisplayUrl } from "../types";
 
 export function RepositoryTemplate({ document, dimensions }: TemplateProps): React.JSX.Element {
   const { customization, metadata, aspectRatio } = document;
   const isVertical = aspectRatio === "story" || aspectRatio === "portrait";
   const padding = Math.round(dimensions.width * 0.075);
   const headlineSize = isVertical ? 58 : 50;
+  const displayUrl = getCardDisplayUrl(document);
 
   const fontStack =
     customization.fontFamily === "mono"
@@ -155,7 +157,19 @@ export function RepositoryTemplate({ document, dimensions }: TemplateProps): Rea
           <span style={{ opacity: 0.5 }}>Public repository</span>
         </div>
 
-        <span style={{ opacity: 0.5 }}>graphixl</span>
+        <span
+          style={{
+            opacity: 0.75,
+            fontSize: "17px",
+            fontWeight: 500,
+            maxWidth: "50%",
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+            whiteSpace: "nowrap",
+          }}
+        >
+          {displayUrl || "graphixl"}
+        </span>
       </div>
     </div>
   );

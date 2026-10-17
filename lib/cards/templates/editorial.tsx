@@ -1,5 +1,5 @@
 import React from "react";
-import { CardDocument } from "../types";
+import { CardDocument, getCardDisplayUrl } from "../types";
 
 export interface TemplateProps {
   document: CardDocument;
@@ -15,6 +15,7 @@ export function EditorialTemplate({ document, dimensions, resolvedImageUrl }: Te
   const padding = Math.round(dimensions.width * 0.07);
   const headlineSize = isVertical ? 58 : isLandscape ? 52 : 56;
   const bodySize = isVertical ? 28 : 24;
+  const displayUrl = getCardDisplayUrl(document);
 
   const fontStack =
     customization.fontFamily === "serif"
@@ -67,7 +68,7 @@ export function EditorialTemplate({ document, dimensions, resolvedImageUrl }: Te
               opacity: 0.85,
             }}
           >
-            {customization.siteName || "Publication"}
+            {customization.siteName || document.metadata.siteName || "Web"}
           </span>
         </div>
 
@@ -94,11 +95,13 @@ export function EditorialTemplate({ document, dimensions, resolvedImageUrl }: Te
         style={{
           display: "flex",
           flexDirection: isLandscape && resolvedImageUrl && customization.showImage ? "row" : "column",
+          alignItems: "center",
           gap: "36px",
           flex: 1,
           justifyContent: "center",
-          marginTop: "32px",
-          marginBottom: "32px",
+          marginTop: "24px",
+          marginBottom: "24px",
+          width: "100%",
         }}
       >
         <div
@@ -107,6 +110,7 @@ export function EditorialTemplate({ document, dimensions, resolvedImageUrl }: Te
             flexDirection: "column",
             justifyContent: "center",
             flex: 1,
+            minWidth: 0,
           }}
         >
           <h1
@@ -125,9 +129,9 @@ export function EditorialTemplate({ document, dimensions, resolvedImageUrl }: Te
           {customization.description && (
             <p
               style={{
-                margin: "24px 0 0 0",
+                margin: "20px 0 0 0",
                 fontSize: `${bodySize}px`,
-                lineHeight: 1.55,
+                lineHeight: 1.5,
                 opacity: 0.75,
               }}
             >
@@ -142,11 +146,13 @@ export function EditorialTemplate({ document, dimensions, resolvedImageUrl }: Te
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              width: isLandscape ? "38%" : "100%",
-              height: isLandscape ? "100%" : isVertical ? "40%" : "280px",
+              width: isLandscape ? "40%" : "100%",
+              height: isLandscape ? "300px" : isVertical ? "400px" : "260px",
+              flexShrink: 0,
               overflow: "hidden",
               borderRadius: "16px",
               border: "1px solid rgba(23, 24, 21, 0.1)",
+              backgroundColor: "rgba(23, 24, 21, 0.04)",
             }}
           >
             {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -157,6 +163,7 @@ export function EditorialTemplate({ document, dimensions, resolvedImageUrl }: Te
                 width: "100%",
                 height: "100%",
                 objectFit: "cover",
+                display: "block",
               }}
             />
           </div>
@@ -172,15 +179,37 @@ export function EditorialTemplate({ document, dimensions, resolvedImageUrl }: Te
           paddingTop: "24px",
           borderTop: "1px solid rgba(23, 24, 21, 0.12)",
           fontSize: "18px",
-          opacity: 0.65,
+          opacity: 0.75,
         }}
       >
-        <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
-          {customization.author && <span>By {customization.author}</span>}
-          <span>Read article</span>
+        <div style={{ display: "flex", alignItems: "center", gap: "16px", flexShrink: 0 }}>
+          {customization.author ? <span>By {customization.author}</span> : <span>Article</span>}
         </div>
-        <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-          <span>graphixl</span>
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: "8px",
+            maxWidth: "70%",
+            overflow: "hidden",
+          }}
+        >
+          {displayUrl ? (
+            <span
+              style={{
+                fontSize: "17px",
+                fontWeight: 500,
+                opacity: 0.85,
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+                whiteSpace: "nowrap",
+              }}
+            >
+              {displayUrl}
+            </span>
+          ) : (
+            <span style={{ opacity: 0.5 }}>graphixl</span>
+          )}
         </div>
       </div>
     </div>
